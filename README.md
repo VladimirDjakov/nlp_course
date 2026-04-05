@@ -69,3 +69,36 @@ Course materials and teaching performed by
 - [Boris Kovarsky](https://github.com/kovarsky), [David Talbot](https://github.com/drt7), [Sergey Gubanov](https://github.com/esgv), Ruslan Svirschevski - help build course materials and/or held some classes
 - [30+ volunteers](https://github.com/yandexdataschool/nlp_course/graphs/contributors) who contributed and refined the notebooks and course materials. Without their help, the course would not be what it is today
 - [A mighty host of TAs](https://lk.yandexdataschool.ru/courses/2023-autumn/7.1171-avtomaticheskaia-obrabotka-tekstov/) who stoically grade hundreds of homework submissions from on-campus students each year
+
+
+## Локальная разработка с uv
+
+В корне репозитория описан проект для [uv](https://docs.astral.sh/uv/): зависимости в `pyproject.toml`, зафиксированные версии в `uv.lock`. Нужны **Python ≥ 3.11** и установленный `uv`.
+
+1. Перейдите в каталог репозитория.
+2. Выберите набор пакетов по неделе (см. таблицу ниже) и выполните одну команду `uv sync` — она создаст или обновит виртуальное окружение `.venv` в корне проекта.
+3. Запускайте скрипты через `uv run …` или активируйте окружение: `source .venv/bin/activate` (Linux/macOS) / `.venv\Scripts\activate` (Windows).
+
+**Ядро (недели 1–3)** — Jupyter, PyTorch и библиотеки для семинаров и домашних без Hugging Face. Достаточно:
+
+```bash
+uv sync
+```
+
+**Один из extras для конфликтующих HF-стеков** — extras `base`, `hf-gptq`, `efficiency` и `finetune` **нельзя комбинировать** в одном окружении (uv выдаст ошибку). Переключая неделю, снова вызывайте `uv sync` с нужным `--extra`:
+
+| Extra | Команда | Для каких материалов |
+|-------|---------|----------------------|
+| *(только ядро)* | `uv sync` | Недели **1–3** (эмбеддинги, ЯМ, внимание, subword-nmt уже в ядре) |
+| `base` | `uv sync --extra base` | Недели **4–5** (transfer, LLM); версии согласованы с зависимостями по умолчанию на Kaggle |
+| `hf-gptq` | `uv sync --extra hf-gptq` | Недели **6** и **9** (стек из ноутбуков с GPTQ / bitsandbytes) |
+| `efficiency` | `uv sync --extra efficiency` | Неделя **8** (квантизация, домашка по эффективности) |
+| `finetune` | `uv sync --extra finetune` | Неделя **7** (TRL / RLHF, старые пины из ноутбука) |
+
+После установки можно зарегистрировать kernel для Jupyter (по желанию):
+
+```bash
+uv run python -m ipykernel install --user --name nlp-course --display-name "NLP course (uv)"
+```
+
+Обновить lock-файл после правок зависимостей: `uv lock` (при необходимости с `--upgrade`).

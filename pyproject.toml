@@ -1,0 +1,86 @@
+[project]
+name = "nlp-course"
+version = "0.1.0"
+description = "NLP course. Core = weeks 1–3 without HF. Pick ONE of base | hf-gptq | efficiency | finetune for conflicting HF stacks."
+readme = "README.md"
+requires-python = ">=3.11"
+
+# Weeks 1–3 (embeddings, LM, attention + subwords): `uv sync` — no Transformers / HF hub download.
+dependencies = [
+    "bokeh==3.8.2",
+    "gensim==4.4.0",
+    "ipykernel==6.17.1",
+    "ipython==7.34.0",
+    "ipywidgets==8.1.5",
+    "jupyterlab==3.6.8",
+    "matplotlib==3.10.0",
+    "networkx==3.6.1",
+    "nltk==3.9.1",
+    "notebook==6.5.7",
+    "numpy==2.0.2",
+    "packaging==26.0",
+    "pandas==2.3.3",
+    "pillow==11.3.0",
+    "pyyaml==6.0.3",
+    "scikit-learn==1.6.1",
+    "scipy==1.16.3",
+    "subword-nmt==0.3.8",
+    "sympy==1.14.0",
+    "torch==2.10.0",
+    "tqdm==4.67.3",
+]
+
+# Hugging Face / training stacks conflict on transformers & friends — pick ONE extra per venv.
+# Weeks 4–5 (transfer, LLM seminar), Kaggle-aligned pins from `req.txt`: `uv sync --extra base`
+# Weeks 6 & 9 (GPTQ stack from notebooks): `uv sync --extra hf-gptq`
+# Week 8 (quantization / Triton homework): `uv sync --extra efficiency`
+# Week 7 (TRL RLHF homework): `uv sync --extra finetune`
+[project.optional-dependencies]
+base = [
+    "accelerate==1.12.0",
+    "datasets==4.8.3",
+    "filelock==3.24.3",
+    "fsspec==2026.2.0",
+    "huggingface-hub==1.4.1",
+    "peft==0.18.1",
+    "protobuf==5.29.5",
+    "regex==2025.11.3",
+    "requests==2.32.4",
+    "safetensors==0.7.0",
+    "sentencepiece==0.2.1",
+    "tokenizers==0.22.2",
+    "transformers==5.0.0",
+    "deepspeed>=0.14; sys_platform == 'linux'",
+]
+hf-gptq = [
+    "auto-gptq==0.4.2",
+    "bitsandbytes==0.41.1",
+    "transformers==4.34.1",
+    "accelerate==0.24.0",
+    "sentencepiece==0.1.99",
+    "optimum==1.13.2",
+]
+efficiency = [
+    "accelerate==1.11.0",
+    "datasets==4.0.0",
+    "ninja==1.13.0",
+    "sentencepiece==0.2.1",
+    "transformers==4.57.1",
+]
+finetune = [
+    "datasets==2.14.4",
+    "peft==0.5.0",
+    "transformers==4.33.1",
+    "trl==0.7.4",
+]
+
+[tool.uv]
+package = false
+conflicts = [
+    [
+        { extra = "base" },
+        { extra = "hf-gptq" },
+        { extra = "efficiency" },
+        { extra = "finetune" },
+    ],
+]
